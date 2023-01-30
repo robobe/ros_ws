@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<robot name="stereo_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Inertia matrices -->
+	<xacro:include filename="$(find stereo_camera_demo)/urdf/macros.xacro" />
+	<!-- Robot constants and properties -->
+	<xacro:include filename="$(find stereo_camera_demo)/urdf/contact_robot_properties.xacro" />
+	<!-- Import Rviz colors -->
+	<xacro:include filename="$(find stereo_camera_demo)/urdf/materials.xacro" />
+	<!-- Body -->
+	<xacro:include filename="$(find stereo_camera_demo)/urdf/head.xacro" />
+	<!-- Arms -->
+	<xacro:include filename="$(find stereo_camera_demo)/urdf/eyes.xacro" />
+
+	<xacro:body/>
+
+
+	<xacro:eye lr="left" tY="-1"/>
+	<xacro:eye lr="right" tY="1"/>
+
+</robot>
