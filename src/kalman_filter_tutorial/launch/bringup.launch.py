@@ -7,7 +7,7 @@ from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 
-PACKAGE = "stereo_camera_demo"
+PACKAGE = "kalman_filter_tutorial"
 WORLD = "basic.world"
 
 def generate_launch_description():
@@ -15,6 +15,7 @@ def generate_launch_description():
 
     pkg = get_package_share_directory(PACKAGE)
     gazebo_pkg = get_package_share_directory('gazebo_ros')
+    turtlebot3_gazebo = os.path.join(get_package_share_directory('turtlebot3_gazebo'), 'launch')
 
     verbose = LaunchConfiguration("verbose")
     arg_gazebo_verbose = DeclareLaunchArgument("verbose", default_value="true")
@@ -41,24 +42,20 @@ def generate_launch_description():
                     launch_arguments={'verbose': verbose, "world": world}.items()
              )
 
-    stereo_camera = IncludeLaunchDescription(
-                PythonLaunchDescriptionSource([os.path.join(
-                    pkg, 'launch', 'camera.launch.py')]),
-                    launch_arguments={'sim_time': sim_time}.items()
-             )
+    spawn_turtlebot_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(turtlebot3_gazebo, 'spawn_turtlebot3.launch.py')
+        ),
+        launch_arguments={
+            'x_pose': '0.0',
+            'y_pose': '0.0'
+        }.items()
+    )
 
-    world_env = IncludeLaunchDescription(
+    wall = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
-                    pkg, 'launch', 'env.launch.py')])
+                    pkg, 'launch', 'spawn_wall.launch.py')])
              )
-
-    rviz_node = Node(
-            package='rviz2',
-            namespace='',
-            executable='rviz2',
-            name='rviz2',
-            arguments=['-d' + os.path.join(pkg, 'config', 'rviz.rviz')]
-        )
 
     ld.add_action(arg_sim_time)
     ld.add_action(models_env)
@@ -66,8 +63,7 @@ def generate_launch_description():
     ld.add_action(arg_gazebo_verbose)
     ld.add_action(arg_gazebo_world)
     ld.add_action(gazebo)
-    ld.add_action(stereo_camera)
-    ld.add_action(world_env)
-    ld.add_action(rviz_node)
+    ld.add_action(spawn_turtlebot_cmd)
+    ld.add_action(wall)
     
     return ld
