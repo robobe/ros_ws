@@ -46,6 +46,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            "odom_utility_tools=kalman_filter_tutorial.odom_utility_tools:main",
+            "teleport_service=kalman_filter_tutorial.teleport_service:main"
         ],
     },
 )
